@@ -17,7 +17,7 @@ class CompanyController extends Controller
     {
         $requests = request(['search','filter']);
         return view('company.index',[
-            "companies" => Company::latest()->filter($requests)->paginate(2)->withQueryString()
+            "companies" => Company::latest()->filter($requests)->paginate(3)->withQueryString()
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\EmployeeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -14,6 +15,7 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth'])->prefix('dashboard')->group(function(){
     Route::resource('company',CompanyController::class);
+    Route::resource('employee',EmployeeController::class);
 });
 
 Route::middleware('auth')->group(function () {

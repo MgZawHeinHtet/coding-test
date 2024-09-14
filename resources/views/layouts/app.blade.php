@@ -44,7 +44,7 @@
                         <ul class="grid gap-10">
                             <li class="border-b-2 pb-5"><a href="/dashboard">Dashboard</a></li>
                             <li class="border-b-2 pb-5"><a href="/dashboard/company">Comapnies</a></li>
-                            <li class="border-b-2 pb-5"><a>Employees</a></li>
+                            <li class="border-b-2 pb-5"><a href="/dashboard/employee">Employees</a></li>
                         </ul>
                     </div>
                      <div class="col-span-2  h-full">
