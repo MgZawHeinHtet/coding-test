@@ -17,7 +17,7 @@ class EmployeeController extends Controller
     {
         $requests = request(['search','filter']);
         return view('employee.index',[
-            "employees" => Employee::with('company')->latest()->paginate(3)->withQueryString()
+            "employees" => Employee::with('company')->latest()->filter($requests)->paginate(3)->withQueryString()
         ]);
     }
 

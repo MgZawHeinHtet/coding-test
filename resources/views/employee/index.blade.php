@@ -3,15 +3,9 @@
         <div class="bg-gray-400 p-3 mb-5 flex justify-between items-center">
             <h5>Total Employees - {{$employees->count()}}</h5>
             <div class="flex gap-3 items-center ">
-                <form >
+                <form class="flex gap-3">
                     <input name="search" value="{{request('search')}}" class="rounded-xl bg-white" placeholder="search by everything" />
-                    <select name="filter" class="rounded-xl" onchange="this.form.submit()">
-                        <option value=''>Filter by Created Date</option>
-                        <option {{request('filter') === "last-day" ? 'selected' : ''}} value="last-day">Last Day</option>
-                        <option {{request('filter') === "7-days" ? 'selected' : ''}} value="7-days">7 Days</option>
-                        <option {{request('filter') === "last-month" ? 'selected' : ''}} value="last-month">Last Month</option>
-                       
-                    </select>
+                    <x-company-list isFilter=true></x-employee-list>
                 </form>
                 <form action="employee/create">
                     @csrf
