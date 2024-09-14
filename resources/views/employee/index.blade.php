@@ -3,7 +3,7 @@
         <div class="bg-gray-400 p-3 mb-5 flex justify-between items-center">
             <h5>Total Employees - {{$employees->count()}}</h5>
             <div class="flex gap-3 items-center ">
-                <form class="flex gap-3">
+                <form class="flex gap-3" onchange="submit()">
                     <input name="search" value="{{request('search')}}" class="rounded-xl bg-white" placeholder="search by everything" />
                     <x-company-list isFilter=true></x-employee-list>
                 </form>
@@ -45,8 +45,6 @@
 
                 @foreach ($employees as $employee)
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-
-
                     <td class="px-4 py-4">
                         <span class="line-clamp-2">
                             {{ $employee->name }}
