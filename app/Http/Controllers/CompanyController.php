@@ -7,6 +7,7 @@ use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate ;
 
 class CompanyController extends Controller
 {
@@ -26,7 +27,6 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        
         return view('company.create');
     }
 
@@ -35,12 +35,15 @@ class CompanyController extends Controller
      */
     public function store(StoreCompanyRequest $request)
     {
-    
-        $cleanData = $request->validated();
-
-        $cleanData['logo'] = '/storage/' . $request->logo->store('/companies');
-        Company::create($cleanData);
-        return redirect('/dashboard/company')->with('create', 'Created Successfully 🎉');
+        
+        if (Gate::forUser(auth()->user())->allows('create')) {
+            $cleanData = $request->validated();
+            $cleanData['logo'] = '/storage/' . $request->logo->store('/companies');
+            Company::create($cleanData);
+            return redirect('/dashboard/company')->with('create', 'Created Successfully 🎉');
+        }else{
+            return redirect('/dashboard/company')->withErrors(['errMsg'=>"Admin can only create Company!"])->withInput();
+        }
     }
 
     /**
@@ -64,21 +67,25 @@ class CompanyController extends Controller
      */
     public function update(StoreCompanyRequest $request, Company $company)
     {
-        $cleanData = $request->validated();
-        if ($request->logo) {
-
-            if (File::exists($path = public_path($company->logo))) {
-                File::delete($path);
+        if (Gate::forUser(auth()->user())->allows('update')) {
+            $cleanData = $request->validated();
+            if ($request->logo) {
+    
+                if (File::exists($path = public_path($company->logo))) {
+                    File::delete($path);
+                }
+                $company->logo = '/storage/' . $request->logo->store('/companies');
             }
-            $company->logo = '/storage/' . $request->logo->store('/companies');
+            $company->name = $cleanData['name'];
+            $company->email = $cleanData['email'];
+            $company->website = $cleanData['website'];
+            $company->update();
+            return redirect('/dashboard/company')->with('edit', 'Updated Successfully 🎉');
+        }else{
+            return redirect('/dashboard/company')->withErrors(['errMsg'=>"Admin can only edit Company!"])->withInput();
         }
-        $company->name = $cleanData['name'];
-        $company->email = $cleanData['email'];
-        $company->website = $cleanData['website'];
-      
 
-        $company->update();
-        return redirect('/dashboard/company')->with('edit', 'Updated Successfully 🎉');
+       
     }
 
     /**
@@ -86,7 +93,12 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        $company->delete();
-        return back()->with('delete', 'Delete Successfully! 🎆');
+        if (Gate::forUser(auth()->user())->allows('delete')) {
+            $company->delete();
+            return back()->with('delete', 'Delete Successfully! 🎆');
+        }else{
+            return redirect('/dashboard/company')->withErrors(['errMsg'=>"Admin can only delete Company!"])->withInput();
+        }
+        
     }
 }

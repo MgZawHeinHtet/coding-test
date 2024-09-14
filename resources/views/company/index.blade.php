@@ -3,14 +3,14 @@
         <div class="bg-gray-400 p-3 mb-5 flex justify-between items-center">
             <h5>Total Companies - {{$companies->count()}}</h5>
             <div class="flex gap-3 items-center ">
-                <form >
+                <form>
                     <input name="search" value="{{request('search')}}" class="rounded-xl bg-white" placeholder="search by everything" />
                     <select name="filter" class="rounded-xl" onchange="this.form.submit()">
                         <option value=''>Filter by Created Date</option>
                         <option {{request('filter') === "last-day" ? 'selected' : ''}} value="last-day">Last Day</option>
                         <option {{request('filter') === "7-days" ? 'selected' : ''}} value="7-days">7 Days</option>
                         <option {{request('filter') === "last-month" ? 'selected' : ''}} value="last-month">Last Month</option>
-                       
+
                     </select>
                 </form>
                 <form action="company/create">
@@ -20,6 +20,9 @@
             </div>
 
         </div>
+        @error('errMsg')
+        <span class="text-red-500 mt-3 mb-3">{{ $message }}</span>
+        @enderror
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
