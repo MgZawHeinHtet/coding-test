@@ -36,7 +36,7 @@ class CompanyController extends Controller
     public function store(StoreCompanyRequest $request)
     {
         
-        if (Gate::forUser(auth()->user())->allows('create')) {
+        if (Gate::forUser(auth()->user())->allows('company-create')) {
             $cleanData = $request->validated();
             $cleanData['logo'] = '/storage/' . $request->logo->store('/companies');
             Company::create($cleanData);
@@ -67,7 +67,7 @@ class CompanyController extends Controller
      */
     public function update(StoreCompanyRequest $request, Company $company)
     {
-        if (Gate::forUser(auth()->user())->allows('update')) {
+        if (Gate::forUser(auth()->user())->allows('company-update')) {
             $cleanData = $request->validated();
             if ($request->logo) {
     
@@ -93,7 +93,7 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        if (Gate::forUser(auth()->user())->allows('delete')) {
+        if (Gate::forUser(auth()->user())->allows('company-delete')) {
             $company->delete();
             return back()->with('delete', 'Delete Successfully! 🎆');
         }else{

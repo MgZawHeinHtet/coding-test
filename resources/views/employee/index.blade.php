@@ -5,7 +5,8 @@
             <div class="flex gap-3 items-center ">
                 <form class="flex gap-3" onchange="submit()">
                     <input name="search" value="{{request('search')}}" class="rounded-xl bg-white" placeholder="search by everything" />
-                    <x-company-list isFilter=true></x-employee-list>
+                    <x-company-list isFilter=true>
+                        </x-employee-list>
                 </form>
                 <form action="employee/create">
                     @csrf
@@ -14,6 +15,9 @@
             </div>
 
         </div>
+        @error('errMsg')
+            <span class="text-red-500 mt-3 mb-3">{{ $message }}</span>
+        @enderror
         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
@@ -30,8 +34,8 @@
                     <th scope="col" class="px-6 py-3">
                         Profile
                     </th>
-                    
-                     <th scope="col" class="px-6 py-3">
+
+                    <th scope="col" class="px-6 py-3">
                         Company name
                     </th>
 
@@ -60,7 +64,7 @@
                         <img class="w-20 h-20 rounded-[50%] object-cover" src="{{$employee->profile}}">
                     </td>
                     <td class="px-6 py-4">
-                       {{$employee->company->name}}
+                        {{$employee->company->name}}
                     </td>
 
                     <td class="px-6 py-4">

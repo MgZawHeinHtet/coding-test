@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreEmployeeRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate ;
+
 
 class EmployeeController extends Controller
 {
@@ -34,11 +36,19 @@ class EmployeeController extends Controller
      */
     public function store(StoreEmployeeRequest $request)
     {
-        $cleanData = $request->validated();
+       
 
-        $cleanData['profile'] = '/storage/' . $request->profile->store('/profiles');
-        Employee::create($cleanData);
-        return redirect('/dashboard/employee')->with('create', 'Created Successfully 🎉');
+        if (Gate::forUser(auth()->user())->allows('employee-create')) {
+            $cleanData = $request->validated();
+
+            $cleanData['profile'] = '/storage/' . $request->profile->store('/profiles');
+            Employee::create($cleanData);
+            return redirect('/dashboard/employee')->with('create', 'Created Successfully 🎉');
+        }else{
+            return redirect('/dashboard/employee')->withErrors(['errMsg'=>"Admin can only add employee!"])->withInput();
+        }
+
+        
     }
 
     /**
@@ -62,22 +72,28 @@ class EmployeeController extends Controller
      */
     public function update(StoreEmployeeRequest $request, Employee $employee)
     {
-        $cleanData = $request->validated();
-        if ($request->profile) {
-
-            if (File::exists($path = public_path($employee->profile))) {
-                File::delete($path);
+        if (Gate::forUser(auth()->user())->allows('employee-update')) {
+            $cleanData = $request->validated();
+            if ($request->profile) {
+    
+                if (File::exists($path = public_path($employee->profile))) {
+                    File::delete($path);
+                }
+                $employee->profile = '/storage/' . $request->profile->store('/profiles');
             }
-            $employee->profile = '/storage/' . $request->profile->store('/profiles');
+            $employee->name = $cleanData['name'];
+            $employee->email = $cleanData['email'];
+            $employee->phone = $cleanData['phone'];
+            $employee->company_id = $cleanData['company_id'];
+          
+    
+            $employee->update();
+            return redirect('/dashboard/employee')->with('edit', 'Updated Successfully 🎉');
+        }else{
+            return redirect('/dashboard/employee')->withErrors(['errMsg'=>"Admin can only update Company!"])->withInput();
         }
-        $employee->name = $cleanData['name'];
-        $employee->email = $cleanData['email'];
-        $employee->phone = $cleanData['phone'];
-        $employee->company_id = $cleanData['company_id'];
-      
-
-        $employee->update();
-        return redirect('/dashboard/employee')->with('edit', 'Updated Successfully 🎉');
+        
+       
     }
 
     /**
@@ -85,8 +101,11 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        $employee->delete();
-        return back()->with('delete', 'Delete Successfully! 🎆');
-
+        if (Gate::forUser(auth()->user())->allows('employee-delete')) {
+            $employee->delete();
+            return back()->with('delete', 'Delete Successfully! 🎆');
+        }else{
+            return redirect('/dashboard/employee')->withErrors(['errMsg'=>"Admin can only delete employee!"])->withInput();
+        }
     }
 }
